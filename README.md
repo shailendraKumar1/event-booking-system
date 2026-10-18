@@ -1,5 +1,7 @@
 # Event Booking System API
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shailendraKumar1/event-booking-system)
+
 A production-grade RESTful API for event management and ticket booking, built with Go's standard library and clean architecture principles. Supports two user roles (Organizer and Customer), JWT authentication, async background job processing for email notifications, TTL caching, and rate limiting.
 
 ## Architecture & Design Decisions

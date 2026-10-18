@@ -1,0 +1,726 @@
+{
+	"info": {
+		"_postman_id": "ebs-2026-collection",
+		"name": "Event Booking System API",
+		"description": "Complete API collection for the Event Booking System.\n\n**Setup**: Run requests in order:\n1. Register Organizer\n2. Register Customer\n3. Login (to refresh tokens)\n4. Then use any endpoint\n\nTokens are auto-saved to collection variables after register/login.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "organizer_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "customer_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "event_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "booking_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Organizer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('organizer_token', json.data.token);",
+									"    pm.test('Organizer registered successfully', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"        pm.expect(json.data.user.role).to.equal('ORGANIZER');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"organizer@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Alice Organizer\",\n    \"role\": \"ORGANIZER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register a new Event Organizer. Token is auto-saved to `organizer_token` variable."
+					}
+				},
+				{
+					"name": "Register Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('customer_token', json.data.token);",
+									"    pm.test('Customer registered successfully', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"        pm.expect(json.data.user.role).to.equal('CUSTOMER');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Bob Customer\",\n    \"role\": \"CUSTOMER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register a new Customer. Token is auto-saved to `customer_token` variable."
+					}
+				},
+				{
+					"name": "Login Organizer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('organizer_token', json.data.token);",
+									"    pm.test('Login successful', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"organizer@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login as Organizer. Token is auto-saved."
+					}
+				},
+				{
+					"name": "Login Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('customer_token', json.data.token);",
+									"    pm.test('Login successful', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login as Customer. Token is auto-saved."
+					}
+				}
+			],
+			"description": "Authentication endpoints - Register and Login"
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Create Event (Organizer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('event_id', json.data.id);",
+									"    pm.test('Event created', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"        pm.expect(json.data.title).to.exist;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Go Conference 2026\",\n    \"description\": \"Annual Go developers conference with workshops and talks\",\n    \"venue\": \"Convention Center, Hall A\",\n    \"starts_at\": \"2026-12-15T09:00:00Z\",\n    \"capacity\": 500\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Create a new event. Requires Organizer role. Event ID is auto-saved."
+					}
+				},
+				{
+					"name": "Create Event 2 (Organizer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.test('Event 2 created', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"React Summit India\",\n    \"description\": \"Frontend developers meetup with live coding sessions\",\n    \"venue\": \"Tech Park Auditorium\",\n    \"starts_at\": \"2027-01-20T10:00:00Z\",\n    \"capacity\": 200\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Create a second event for testing list/pagination."
+					}
+				},
+				{
+					"name": "List Events (Public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Events listed', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.success).to.be.true;",
+									"    pm.expect(json.data).to.be.an('array');",
+									"    pm.expect(json.meta.total).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/events?offset=0&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "List all events with pagination. No auth required."
+					}
+				},
+				{
+					"name": "Get Event by ID (Public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Event retrieved', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.success).to.be.true;",
+									"    pm.expect(json.data.id).to.equal(pm.collectionVariables.get('event_id'));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}"]
+						},
+						"description": "Get a specific event by ID. Cached with TTL."
+					}
+				},
+				{
+					"name": "Update Event (Organizer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Event updated', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.success).to.be.true;",
+									"    pm.expect(json.data.venue).to.contain('New');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"venue\": \"New Convention Center, Hall B\",\n    \"description\": \"Updated: Now includes hands-on workshops!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}"]
+						},
+						"description": "Update an event. Only the owning organizer can update. Triggers background notification to all booked customers."
+					}
+				}
+			],
+			"description": "Event management endpoints"
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Book Tickets (Customer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('booking_id', json.data.id);",
+									"    pm.test('Booking confirmed', function() {",
+									"        pm.expect(json.success).to.be.true;",
+									"        pm.expect(json.data.status).to.equal('CONFIRMED');",
+									"        pm.expect(json.data.quantity).to.equal(3);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "bookings"]
+						},
+						"description": "Book tickets for an event. Requires Customer role. Triggers async booking confirmation email. Booking ID is auto-saved."
+					}
+				},
+				{
+					"name": "Book More Tickets (Customer)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "bookings"]
+						},
+						"description": "Book additional tickets to test multiple bookings."
+					}
+				},
+				{
+					"name": "My Bookings (Customer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Bookings listed', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.success).to.be.true;",
+									"    pm.expect(json.data).to.be.an('array');",
+									"    pm.expect(json.data.length).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "bookings", "me"]
+						},
+						"description": "List all bookings for the authenticated customer."
+					}
+				}
+			],
+			"description": "Booking endpoints"
+		},
+		{
+			"name": "Health & Metrics",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Server is healthy', function() {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.success).to.be.true;",
+									"    pm.expect(json.data.status).to.equal('ok');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Health check with worker pool metrics (jobs processed, failed, queue length, uptime)."
+					}
+				}
+			],
+			"description": "System health and monitoring"
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Create Event Without Auth (401)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Unauthorized without token', function() {",
+									"    pm.expect(pm.response.code).to.equal(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Should Fail\",\n    \"capacity\": 100\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Attempting to create event without authorization token. Should return 401."
+					}
+				},
+				{
+					"name": "Create Event as Customer (403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Forbidden for wrong role', function() {",
+									"    pm.expect(pm.response.code).to.equal(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Should Fail\",\n    \"capacity\": 100\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						},
+						"description": "Customer trying to create an event. Should return 403 Forbidden."
+					}
+				},
+				{
+					"name": "Book as Organizer (403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Forbidden for wrong role', function() {",
+									"    pm.expect(pm.response.code).to.equal(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{organizer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "bookings"]
+						},
+						"description": "Organizer trying to book tickets. Should return 403 Forbidden."
+					}
+				},
+				{
+					"name": "Duplicate Registration (409)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Duplicate email rejected', function() {",
+									"    pm.expect(pm.response.code).to.equal(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"organizer@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Duplicate\",\n    \"role\": \"ORGANIZER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register with an already-used email. Should return 409 Conflict."
+					}
+				},
+				{
+					"name": "Get Nonexistent Event (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Event not found', function() {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/events/nonexistent-id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "nonexistent-id"]
+						},
+						"description": "Get an event that doesn't exist. Should return 404."
+					}
+				}
+			],
+			"description": "Error handling and edge case tests"
+		}
+	]
+}
