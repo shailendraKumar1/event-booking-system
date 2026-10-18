@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: event-booking-system
+    runtime: docker
+    plan: free
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: WORKER_POOL_SIZE
+        value: "10"
+      - key: JOB_QUEUE_SIZE
+        value: "500"
+      - key: RATE_LIMIT_RPS
+        value: "200"
+      - key: RATE_LIMIT_BURST
+        value: "400"
